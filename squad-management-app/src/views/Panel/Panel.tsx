@@ -1,30 +1,40 @@
-import React from "react";
-import { useStyles } from "./styles";
+/** @jsx jsx */
+import { jsx } from "@emotion/core";
 import VenturusLogo from "../../images/venturus-logo.svg";
-import { Paper, Grid } from "@material-ui/core";
+import { Paper } from "@material-ui/core";
+import TeamTable from "./components/TeamTable/TeamTable";
+import {
+  root,
+  nav,
+  leftBlock,
+  logo,
+  rigthBlock,
+  container,
+  leftArea,
+  rightArea,
+  paper,
+} from "./styles";
 
 function Panel() {
-  const classes = useStyles();
-
   return (
-    <div className={classes.root}>
-      <nav className={classes.nav}>
-        <span className={classes.leftBlock}>
-          <img alt="Logo" src={VenturusLogo} className={classes.logo} />
+    <div css={root}>
+      <nav css={nav}>
+        <span css={leftBlock}>
+          <img alt="Logo" src={VenturusLogo} css={logo} />
           <p> Squad Management Tool</p>
         </span>
-        <span className={classes.rigthBlock}>
+        <span css={rigthBlock}>
           <p>Jonh Doe</p>
-          <img alt="Logo" src={VenturusLogo} className={classes.logo} />
+          <img alt="Logo" src={VenturusLogo} css={logo} />
         </span>
       </nav>
-      <div className={classes.container}>
-        <div className={classes.leftArea}>
-          <Paper className={classes.paper}>CHHH</Paper>
+      <div css={container}>
+        <div css={leftArea}>
+          <TeamTable />
         </div>
-        <div className={classes.rightArea}>
-          <Paper className={classes.paper}>AHH</Paper>
-          <Paper className={classes.paper} style={{ marginBottom: "40px" }}>
+        <div css={rightArea}>
+          <Paper css={paper}>AHH</Paper>
+          <Paper css={paper} style={{ marginBottom: "40px" }}>
             BHHH
           </Paper>
         </div>
