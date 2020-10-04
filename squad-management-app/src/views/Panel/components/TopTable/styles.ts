@@ -3,6 +3,10 @@ import { css } from "@emotion/core";
 import styled from "@emotion/styled/macro";
 import { motion } from "framer-motion";
 
+interface Props {
+  selected: boolean;
+}
+
 export const root = css`
   background-color: #f7f3f7;
   width: 100%;
@@ -57,15 +61,16 @@ export const Table = styled.div`
   padding: 5px;
 `;
 
-export const TableRow = styled.div`
+export const TableRow = styled.div<Props>`
   display: flex;
   padding: 12px;
   align-items: center;
   justify-content: space-between;
   background: white;
   width: 100%;
-  height: 30px;
+  height: 35px;
   border-radius: 10px;
+  border: ${(props) => (props.selected ? "1px solid #8a206f" : "none")};
 `;
 
 export const titleTable = css`

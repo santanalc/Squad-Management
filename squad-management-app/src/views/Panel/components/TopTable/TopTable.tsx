@@ -1,6 +1,7 @@
 /** @jsx jsx */
 import { jsx } from "@emotion/core";
 import { Paper } from "@material-ui/core";
+import { useState } from "react";
 import {
   root,
   TableRoot,
@@ -13,6 +14,9 @@ import {
 } from "./styles";
 
 function TopTable() {
+  const [highest, setHighest] = useState(0);
+  const [lowest, setLowest] = useState(0);
+
   return (
     <Paper css={root}>
       <div css={tableTitle}>
@@ -26,7 +30,10 @@ function TopTable() {
               .fill(1)
               .map((elem, index) => {
                 return (
-                  <TableRow>
+                  <TableRow
+                    onClick={() => setHighest(index)}
+                    selected={highest === index}
+                  >
                     <p>Inter Milan</p>
                     <p>31.9</p>
                   </TableRow>
@@ -41,7 +48,10 @@ function TopTable() {
               .fill(1)
               .map((elem, index) => {
                 return (
-                  <TableRow>
+                  <TableRow
+                    onClick={() => setLowest(index)}
+                    selected={lowest === index}
+                  >
                     <p>Inter Milan</p>
                     <p>31.9</p>
                   </TableRow>

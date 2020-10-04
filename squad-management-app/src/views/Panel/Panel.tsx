@@ -15,6 +15,7 @@ import {
   paper,
 } from "./styles";
 import TopTable from "./components/TopTable/TopTable";
+import InfoTable from "./components/InfoTable/InfoTable";
 
 function Panel() {
   return (
@@ -35,9 +36,7 @@ function Panel() {
         </div>
         <div css={rightArea}>
           <TopTable />
-          <Paper css={paper} style={{ marginBottom: "40px" }}>
-            BHHH
-          </Paper>
+          <InfoTable />
         </div>
       </div>
     </div>
