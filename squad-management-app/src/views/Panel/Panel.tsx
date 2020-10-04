@@ -14,6 +14,7 @@ import {
   rightArea,
   paper,
 } from "./styles";
+import TopTable from "./components/TopTable/TopTable";
 
 function Panel() {
   return (
@@ -33,7 +34,7 @@ function Panel() {
           <TeamTable />
         </div>
         <div css={rightArea}>
-          <Paper css={paper}>AHH</Paper>
+          <TopTable />
           <Paper css={paper} style={{ marginBottom: "40px" }}>
             BHHH
           </Paper>

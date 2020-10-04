@@ -17,7 +17,6 @@ import {
 import { MdAdd, MdUnfoldMore, MdEdit, MdShare, MdDelete } from "react-icons/md";
 import { Theme, withStyles } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
-import { useState } from "react";
 
 const TooltipArrow = withStyles((theme: Theme) => ({
   arrow: {

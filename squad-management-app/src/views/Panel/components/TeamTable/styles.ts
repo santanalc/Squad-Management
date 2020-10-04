@@ -1,8 +1,7 @@
 /** @jsx jsx */
-import { jsx, css } from "@emotion/core";
+import { css } from "@emotion/core";
 import styled from "@emotion/styled/macro";
 import { motion } from "framer-motion";
-import { MdUnfoldMore } from "react-icons/md";
 
 export const root = css`
   background-color: #f7f3f7;
