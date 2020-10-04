@@ -13,6 +13,7 @@ html {
 body {
   background-color: #f4f6f8;
   height: 100%;
+  font-family: "Gotham-Book";
 }
 
 a {
@@ -21,4 +22,28 @@ a {
 
 #root {
   height: 100%;
+}
+
+@font-face {
+  font-family: "Gotham-Bold";
+  font-weight: 500;
+  font-style: normal;
+  src: url("./fonts/Gotham-Bold.eot");
+  src: url("./fonts/Gotham-Bold.eot") format("embedded-opentype"),
+    url("./fonts/Gotham-Bold.ttf") format("truetype"),
+    url("./fonts/Gotham-Bold.woff2") format("woff2"),
+    url("./fonts/Gotham-Bold.woff") format("woff"),
+    url("./fonts/Gotham-Bold.svg") format("svg");
+}
+
+@font-face {
+  font-family: "Gotham-Book";
+  font-weight: 300;
+  font-style: normal;
+  src: url("./fonts/Gotham-Book.eot");
+  src: url("./fonts/Gotham-Book.eot") format("embedded-opentype"),
+    url("./fonts/Gotham-Book.ttf") format("truetype"),
+    url("./fonts/Gotham-Book.woff2") format("woff2"),
+    url("./fonts/Gotham-Book.woff") format("woff"),
+    url("./fonts/Gotham-Book.svg") format("svg");
 }
