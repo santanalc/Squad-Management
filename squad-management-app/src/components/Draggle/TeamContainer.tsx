@@ -1,12 +1,12 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core";
-import { useState, useCallback } from "react";
+import { css, jsx } from "@emotion/core";
+import { useState, useCallback, useEffect } from "react";
 import { Box } from "./Box";
 import update from "immutability-helper";
 import { Dustbin } from "./Dustibin";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Area, Container, selectText } from "./styles";
+import { Area, Container, GridDustibin, selectText } from "./styles";
 import {
   createStyles,
   FormControl,
@@ -15,6 +15,7 @@ import {
   NativeSelect,
   Theme,
 } from "@material-ui/core";
+import { getArea, getGridDustibin } from "./dinamicArea";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,11 +54,10 @@ export interface ContainerState {
 export const TeamContainer: React.FC = () => {
   const classes = useStyles();
   const [formation, setFormation] = useState<{
-    value: string | number;
+    value: any;
     name: string;
   }>({ value: 0, name: "3 - 4 - 3" });
   const [dustbins, setDustbins] = useState<DustbinState[]>([
-    { id: 0, accepts: ["player"], lastDroppedItem: null },
     { id: 1, accepts: ["player"], lastDroppedItem: null },
     { id: 2, accepts: ["player"], lastDroppedItem: null },
     { id: 3, accepts: ["player"], lastDroppedItem: null },
@@ -144,15 +144,17 @@ export const TeamContainer: React.FC = () => {
               </NativeSelect>
             </FormControl>
           </div>
-
-          <Area>
-            {dustbins.map(({ accepts, lastDroppedItem }, index) => (
-              <Dustbin
-                accept={accepts}
-                lastDroppedItem={lastDroppedItem}
-                onDrop={(item) => handleDrop(index, item)}
-                key={index}
-              />
+          {console.log(formation.value)}
+          <Area css={getArea(parseInt(formation.value))}>
+            {dustbins.map(({ accepts, lastDroppedItem, id }, index) => (
+              <GridDustibin key={id} css={getGridDustibin(id)}>
+                <Dustbin
+                  accept={accepts}
+                  lastDroppedItem={lastDroppedItem}
+                  onDrop={(item) => handleDrop(index, item)}
+                  key={index}
+                />
+              </GridDustibin>
             ))}
           </Area>
         </div>
