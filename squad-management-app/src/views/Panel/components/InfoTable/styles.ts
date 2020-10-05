@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { css } from "@emotion/core";
 import styled from "@emotion/styled/macro";
-import { motion } from "framer-motion";
 
 export const root = css`
   background: linear-gradient(0deg, #8a206f 40%, #bf0e4f 90%);

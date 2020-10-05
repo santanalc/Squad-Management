@@ -1,6 +1,6 @@
 /** @jsx jsx */
-import { css, jsx } from "@emotion/core";
-import { useState, useCallback, useEffect } from "react";
+import { jsx } from "@emotion/core";
+import { useState, useCallback } from "react";
 import { Box } from "./Box";
 import update from "immutability-helper";
 import { Dustbin } from "./Dustibin";
@@ -10,7 +10,6 @@ import { Area, Container, GridDustibin, selectText } from "./styles";
 import {
   createStyles,
   FormControl,
-  InputLabel,
   makeStyles,
   NativeSelect,
   Theme,

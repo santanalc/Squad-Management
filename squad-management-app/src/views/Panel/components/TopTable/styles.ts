@@ -1,7 +1,6 @@
 /** @jsx jsx */
 import { css } from "@emotion/core";
 import styled from "@emotion/styled/macro";
-import { motion } from "framer-motion";
 
 interface Props {
   selected: boolean;
