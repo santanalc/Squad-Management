@@ -13,11 +13,17 @@ import StyledInput, {
   upperTitleState,
 } from "../../components/StyledInput";
 import { tableTitle, title } from "../Panel/components/TeamTable/styles";
-import { root } from "../Panel/styles";
-import { container, EditRow, flexColumn, infoText, inputsRow } from "./styles";
+import {
+  EditRow,
+  flexColumn,
+  infoText,
+  paperRoot,
+  editContainer,
+} from "./styles";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { makeStyles } from "@material-ui/styles";
 import { motion, TargetAndTransition } from "framer-motion";
+import { TeamContainer } from "../../components/Draggle/TeamContainer";
 
 export const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,8 +44,8 @@ function Edit() {
   const classes = useStyles();
 
   return (
-    <div css={root}>
-      <Paper css={container}>
+    <div css={editContainer}>
+      <Paper css={paperRoot}>
         <div css={tableTitle}>
           <p css={title}>Create your team</p>
         </div>
@@ -157,6 +163,8 @@ function Edit() {
         </EditRow>
 
         <p css={infoText}> CONFIGURE SQUAD</p>
+
+        <TeamContainer />
       </Paper>
     </div>
   );

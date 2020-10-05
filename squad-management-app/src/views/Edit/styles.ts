@@ -2,13 +2,18 @@
 import { css } from "@emotion/core";
 import styled from "@emotion/styled";
 
-export const container = css`
+export const paperRoot = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+`;
+
+export const editContainer = css`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 95%;
-  max-width: 90%;
-  height: 100%;
   margin: 70px 0px 40px 0px;
 `;
 
@@ -37,6 +42,7 @@ export const EditRow = styled.div`
     grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
     grid-row-gap: 10vw;
+    width: 90%;
   }
 `;
 

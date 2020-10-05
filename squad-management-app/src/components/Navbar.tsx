@@ -12,6 +12,7 @@ const nav = css`
   justify-content: space-between;
   align-items: center;
   background: linear-gradient(45deg, #bf0e4f 30%, #8a206f 90%);
+  z-index: 999;
 `;
 const logo = css`
   height: 40px;

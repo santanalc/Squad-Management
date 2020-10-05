@@ -18,6 +18,7 @@ function StyledInput(props: Props, ref: any) {
         width: 100%;
         display: flex;
         position: relative;
+        z-index: 0;
       `}
     >
       {
