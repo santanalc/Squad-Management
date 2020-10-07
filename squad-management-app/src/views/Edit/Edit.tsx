@@ -25,6 +25,33 @@ import { makeStyles } from "@material-ui/styles";
 import { motion, TargetAndTransition } from "framer-motion";
 import { TeamContainer } from "../../components/Draggle/TeamContainer";
 
+export interface DustbinState {
+  id: number;
+  accepts: string[];
+  lastDroppedItem: any;
+}
+
+export interface BoxState {
+  name: string;
+  nationality: string;
+  age: number;
+  type: string;
+}
+
+export const initialDustibins = [
+  { id: 1, accepts: ["player"], lastDroppedItem: null },
+  { id: 2, accepts: ["player"], lastDroppedItem: null },
+  { id: 3, accepts: ["player"], lastDroppedItem: null },
+  { id: 4, accepts: ["player"], lastDroppedItem: null },
+  { id: 5, accepts: ["player"], lastDroppedItem: null },
+  { id: 6, accepts: ["player"], lastDroppedItem: null },
+  { id: 7, accepts: ["player"], lastDroppedItem: null },
+  { id: 8, accepts: ["player"], lastDroppedItem: null },
+  { id: 9, accepts: ["player"], lastDroppedItem: null },
+  { id: 10, accepts: ["player"], lastDroppedItem: null },
+  { id: 11, accepts: ["player"], lastDroppedItem: null },
+];
+
 export const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -37,11 +64,32 @@ const upperTitleTag: TargetAndTransition = {
   scale: 0.8,
   opacity: 1,
 };
+
+function urlRegex(site: string) {
+  let expression = /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+  let regex = new RegExp(expression);
+
+  if (site.match(regex)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function Edit() {
   const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [site, setSite] = useState("");
+  const [dustbins, setDustbins] = useState<DustbinState[]>(initialDustibins);
+  const [boxes, setBoxes] = useState<BoxState[]>([]);
+  const [droppedBoxNames, setDroppedBoxNames] = useState<string[]>([]);
   const [teamType, setTeamType] = useState(0);
   const [keywords, setKeywords] = useState<any>();
   const classes = useStyles();
+
+  function handleSubmit() {
+    console.log(droppedBoxNames, dustbins);
+  }
 
   return (
     <div css={editContainer}>
@@ -55,16 +103,16 @@ function Edit() {
           <StyledInput
             value={name}
             onChangeText={(text) => setName(text)}
-            errorInput={false}
+            errorInput={!name.length}
             inputProps={{
               placeholder: "Insert team name",
               title: "Team Name",
             }}
           />
           <StyledInput
-            value={name}
-            onChangeText={(text) => setName(text)}
-            errorInput={false}
+            value={site}
+            onChangeText={(text) => setSite(text)}
+            errorInput={!urlRegex(site)}
             inputProps={{
               placeholder: "http://myteam.com",
               title: "Team website",
@@ -74,9 +122,9 @@ function Edit() {
 
         <EditRow>
           <StyledInput
-            value={name}
-            onChangeText={(text) => setName(text)}
-            errorInput={false}
+            value={description}
+            onChangeText={(text) => setDescription(text)}
+            errorInput={!description.length}
             inputProps={{
               title: "Description",
             }}
@@ -164,7 +212,15 @@ function Edit() {
 
         <p css={infoText}> CONFIGURE SQUAD</p>
 
-        <TeamContainer />
+        <TeamContainer
+          dustbins={dustbins}
+          setDustbins={setDustbins}
+          boxes={boxes}
+          setBoxes={setBoxes}
+          handleSubmit={handleSubmit}
+          droppedBoxNames={droppedBoxNames}
+          setDroppedBoxNames={setDroppedBoxNames}
+        />
       </Paper>
     </div>
   );

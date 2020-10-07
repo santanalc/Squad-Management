@@ -2,6 +2,7 @@
 import { css, jsx } from "@emotion/core";
 import styled from "@emotion/styled";
 import { useDrag } from "react-dnd";
+import { BoxState } from "../../views/Edit/Edit";
 
 interface StyleProps {
   opacity: number;
@@ -43,14 +44,13 @@ const info = css`
 `;
 
 export interface BoxProps {
-  name: string;
-  type: string;
+  boxElem: BoxState;
   isDropped: boolean;
 }
 
-export const Box: React.FC<BoxProps> = ({ name, type, isDropped }) => {
+export const Box: React.FC<BoxProps> = ({ boxElem, isDropped }) => {
   const [{ opacity }, drag] = useDrag({
-    item: { name, type },
+    item: { name: boxElem.name, type: boxElem.type },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.4 : 1,
     }),
@@ -65,15 +65,15 @@ export const Box: React.FC<BoxProps> = ({ name, type, isDropped }) => {
     >
       <div css={spaceBet}>
         <p css={phrase}>
-          Name: <p css={info}> {name}</p>
+          Name: <p css={info}> {boxElem.name}</p>
         </p>
         <p css={phrase}>
-          Age: <p css={info}> 32</p>
+          Age: <p css={info}> {boxElem.age}</p>
         </p>
       </div>
       <div css={spaceBet}>
         <p css={phrase}>
-          Nationality: <p css={info}> Portugal</p>
+          Nationality: <p css={info}> {boxElem.nationality}</p>
         </p>
       </div>
     </BoxDiv>

@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { css, jsx } from "@emotion/core";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { Box } from "./Box";
 import update from "immutability-helper";
 import { Dustbin } from "./Dustibin";
@@ -23,6 +23,13 @@ import {
 } from "@material-ui/core";
 import { getArea, getGridDustibin } from "./dinamicArea";
 import StyledInput from "../StyledInput";
+import {
+  BoxState,
+  DustbinState,
+  initialDustibins,
+} from "../../views/Edit/Edit";
+import { Dispatch } from "@testing-library/react/node_modules/@types/react";
+import { SetStateAction } from "@testing-library/react/node_modules/@types/react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,17 +39,6 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-
-interface DustbinState {
-  id: number;
-  accepts: string[];
-  lastDroppedItem: any;
-}
-
-interface BoxState {
-  name: string;
-  type: string;
-}
 
 export interface DustbinSpec {
   accepts: string[];
@@ -58,34 +54,35 @@ export interface ContainerState {
   boxes: BoxSpec[];
 }
 
-export const TeamContainer: React.FC = () => {
+interface Props {
+  dustbins: DustbinState[];
+  setDustbins: Dispatch<SetStateAction<DustbinState[]>>;
+  boxes: BoxState[];
+  setBoxes: Dispatch<SetStateAction<BoxState[]>>;
+  droppedBoxNames: string[];
+  setDroppedBoxNames: Dispatch<SetStateAction<string[]>>;
+  handleSubmit: any;
+}
+
+export function TeamContainer(props: Props) {
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
   const classes = useStyles();
+  const firstUpdate = useRef(true);
   const [formation, setFormation] = useState<{
     value: any;
     name: string;
   }>({ value: 0, name: "3 - 4 - 3" });
-  const [dustbins, setDustbins] = useState<DustbinState[]>([
-    { id: 1, accepts: ["player"], lastDroppedItem: null },
-    { id: 2, accepts: ["player"], lastDroppedItem: null },
-    { id: 3, accepts: ["player"], lastDroppedItem: null },
-    { id: 4, accepts: ["player"], lastDroppedItem: null },
-    { id: 5, accepts: ["player"], lastDroppedItem: null },
-    { id: 6, accepts: ["player"], lastDroppedItem: null },
-    { id: 7, accepts: ["player"], lastDroppedItem: null },
-    { id: 8, accepts: ["player"], lastDroppedItem: null },
-    { id: 9, accepts: ["player"], lastDroppedItem: null },
-    { id: 10, accepts: ["player"], lastDroppedItem: null },
-    { id: 11, accepts: ["player"], lastDroppedItem: null },
-  ]);
 
-  const [boxes] = useState<BoxState[]>([
-    { name: "Bottle", type: "player" },
-    { name: "Banana", type: "player" },
-    { name: "Magazine", type: "player" },
-  ]);
-
-  const [droppedBoxNames, setDroppedBoxNames] = useState<string[]>([]);
+  const {
+    dustbins,
+    setDustbins,
+    boxes,
+    setBoxes,
+    droppedBoxNames,
+    setDroppedBoxNames,
+    handleSubmit,
+  } = props;
 
   function isDropped(boxName: string) {
     return droppedBoxNames.indexOf(boxName) > -1;
@@ -94,7 +91,6 @@ export const TeamContainer: React.FC = () => {
   const handleDrop = useCallback(
     (index: number, item: { name: string }) => {
       const { name } = item;
-      // console.log("A");
       setDroppedBoxNames(
         update(droppedBoxNames, name ? { $push: [name] } : { $push: [] })
       );
@@ -108,7 +104,7 @@ export const TeamContainer: React.FC = () => {
         })
       );
     },
-    [droppedBoxNames, dustbins]
+    [droppedBoxNames, dustbins, setDroppedBoxNames, setDustbins]
   );
 
   const handleChange = (
@@ -123,6 +119,57 @@ export const TeamContainer: React.FC = () => {
       [name]: event.target.value,
     });
   };
+
+  useEffect(() => {
+    if (firstUpdate.current) {
+      setTimeout(() => (firstUpdate.current = false), 600);
+      return;
+    } else {
+      setDustbins(initialDustibins);
+      setDroppedBoxNames([]);
+    }
+  }, [formation, setDroppedBoxNames, setDustbins]);
+
+  useEffect(() => {
+    if (name.length >= 4)
+      (async () => {
+        setLoading(true);
+        try {
+          let response = await fetch(
+            `https://api-football-v1.p.rapidapi.com/v2/players/search/${name}`,
+            {
+              method: "GET",
+              headers: {
+                "x-rapidapi-host": "api-football-v1.p.rapidapi.com",
+                "x-rapidapi-key":
+                  "b2f92d5118mshaa17c597c6bda72p13e267jsn3aba431a54e4",
+              },
+            }
+          );
+
+          let responseObject = await response.json();
+
+          let players = responseObject.api.players
+            .slice(0, 10)
+            .map((elem: { player_name: any; nationality: any; age: any }) => {
+              return {
+                name: elem.player_name,
+                nationality: elem.nationality,
+                age: elem.age,
+                type: "player",
+              };
+            });
+          setBoxes(players);
+        } catch (err) {
+          console.log(err);
+        } finally {
+          setLoading(false);
+        }
+      })();
+    if (name.length === 0) {
+      setBoxes([]);
+    }
+  }, [name, setBoxes]);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -170,6 +217,7 @@ export const TeamContainer: React.FC = () => {
             whileTap={{
               y: 1,
             }}
+            onClick={() => handleSubmit()}
           >
             Save
           </SaveButton>
@@ -188,11 +236,10 @@ export const TeamContainer: React.FC = () => {
             `}
           />
           <Boxes>
-            {boxes.map(({ name, type }, index) => (
+            {boxes.map((elem, index) => (
               <Box
-                name={name}
-                type={type}
-                isDropped={isDropped(name)}
+                boxElem={elem}
+                isDropped={isDropped(elem.name)}
                 key={index}
               />
             ))}
@@ -201,4 +248,4 @@ export const TeamContainer: React.FC = () => {
       </Container>
     </DndProvider>
   );
-};
+}
