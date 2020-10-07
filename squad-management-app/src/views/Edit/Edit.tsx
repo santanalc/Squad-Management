@@ -24,6 +24,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { makeStyles } from "@material-ui/styles";
 import { motion, TargetAndTransition } from "framer-motion";
 import { TeamContainer } from "../../components/Draggle/TeamContainer";
+import { useParams, useHistory } from "react-router-dom";
 
 export interface DustbinState {
   id: number;
@@ -36,6 +37,10 @@ export interface BoxState {
   nationality: string;
   age: number;
   type: string;
+}
+
+interface ParamTypes {
+  id: string;
 }
 
 export const initialDustibins = [
@@ -87,8 +92,10 @@ function Edit() {
   const [keywords, setKeywords] = useState<any>();
   const classes = useStyles();
 
+  const { id } = useParams<ParamTypes>();
+
   function handleSubmit() {
-    console.log(droppedBoxNames, dustbins);
+    console.log(droppedBoxNames, dustbins, id, name, description);
   }
 
   return (

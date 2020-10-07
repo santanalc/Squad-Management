@@ -17,6 +17,7 @@ import {
 import { MdAdd, MdUnfoldMore, MdEdit, MdShare, MdDelete } from "react-icons/md";
 import { Theme, withStyles } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
+import { useHistory } from "react-router-dom";
 
 const TooltipArrow = withStyles((theme: Theme) => ({
   arrow: {
@@ -33,6 +34,8 @@ const TooltipArrow = withStyles((theme: Theme) => ({
 }))(Tooltip);
 
 function TeamTable() {
+  const history = useHistory();
+
   return (
     <Paper css={root}>
       <div css={tableTitle}>
@@ -42,6 +45,7 @@ function TeamTable() {
           whileTap={{
             y: 1,
           }}
+          onClick={() => history.push("/add")}
         >
           <MdAdd fontSize={25} color={"white"} />
         </AddButton>
@@ -111,7 +115,7 @@ function TeamTable() {
                         whileTap={{
                           y: 1,
                         }}
-                        onClick={() => console.log("Edit")}
+                        onClick={() => history.push(`/edit/${index}`)}
                       >
                         <MdEdit />
                       </SortButton>

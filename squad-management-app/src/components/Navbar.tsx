@@ -1,5 +1,6 @@
 /** @jsx jsx */
 import { jsx, css } from "@emotion/core";
+import { Avatar } from "@material-ui/core";
 import VenturusLogo from "../images/venturus-logo.svg";
 
 const nav = css`
@@ -33,16 +34,30 @@ const rigthBlock = css`
   margin-right: 10px;
 `;
 
+const text = css`
+  font-weight: bold;
+  color: white;
+  font-size: 16px;
+`;
+
 function Navbar() {
   return (
     <nav css={nav}>
       <span css={leftBlock}>
         <img alt="Logo" src={VenturusLogo} css={logo} />
-        <p> Squad Management Tool</p>
+        <p css={text}> Squad Management Tool</p>
       </span>
       <span css={rigthBlock}>
-        <p>Jonh Doe</p>
-        <img alt="Logo" src={VenturusLogo} css={logo} />
+        <p css={text}>Jonh Doe</p>
+        <Avatar sizes={"small"}>
+          <p
+            css={css`
+              color: black;
+            `}
+          >
+            JD
+          </p>
+        </Avatar>
       </span>
     </nav>
   );

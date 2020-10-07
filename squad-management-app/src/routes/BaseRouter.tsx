@@ -15,6 +15,9 @@ function BaseRouter() {
         <Route path="/edit/:id">
           <Edit />
         </Route>
+        <Route path="/add">
+          <Edit />
+        </Route>
       </Switch>
     </Router>
   );
