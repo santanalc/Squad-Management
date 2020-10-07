@@ -50,3 +50,9 @@ yarn
 ```
 yarn start
 ```
+
+## Testes
+
+![Farmers Market Finder Demo](gifts/addTeam.gif)
+![Farmers Market Finder Demo](gifts/editTeam.gif)
+![Farmers Market Finder Demo](gifts/sort&Delete.gif)
