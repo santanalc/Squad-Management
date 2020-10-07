@@ -53,11 +53,14 @@ yarn start
 
 ## Testes
 
-Adicionando um tie
+Adicionando um time
+
 ![Farmers Market Finder Demo](gifts/addTeam.gif)
 
 Editando um time
+
 ![Farmers Market Finder Demo](gifts/editTeam.gif)
 
 Filtrando e deletando times
+
 ![Farmers Market Finder Demo](gifts/sort&Delete.gif)
