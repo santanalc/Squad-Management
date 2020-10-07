@@ -1,12 +1,19 @@
 /** @jsx jsx */
-import { jsx } from "@emotion/core";
+import { css, jsx } from "@emotion/core";
 import { useState, useCallback } from "react";
 import { Box } from "./Box";
 import update from "immutability-helper";
 import { Dustbin } from "./Dustibin";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Area, Container, GridDustibin, selectText } from "./styles";
+import {
+  Area,
+  Boxes,
+  Container,
+  GridDustibin,
+  SaveButton,
+  selectText,
+} from "./styles";
 import {
   createStyles,
   FormControl,
@@ -15,6 +22,7 @@ import {
   Theme,
 } from "@material-ui/core";
 import { getArea, getGridDustibin } from "./dinamicArea";
+import StyledInput from "../StyledInput";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -51,6 +59,7 @@ export interface ContainerState {
 }
 
 export const TeamContainer: React.FC = () => {
+  const [name, setName] = useState("");
   const classes = useStyles();
   const [formation, setFormation] = useState<{
     value: any;
@@ -85,6 +94,7 @@ export const TeamContainer: React.FC = () => {
   const handleDrop = useCallback(
     (index: number, item: { name: string }) => {
       const { name } = item;
+      // console.log("A");
       setDroppedBoxNames(
         update(droppedBoxNames, name ? { $push: [name] } : { $push: [] })
       );
@@ -143,7 +153,6 @@ export const TeamContainer: React.FC = () => {
               </NativeSelect>
             </FormControl>
           </div>
-          {console.log(formation.value)}
           <Area css={getArea(parseInt(formation.value))}>
             {dustbins.map(({ accepts, lastDroppedItem, id }, index) => (
               <GridDustibin key={id} css={getGridDustibin(id)}>
@@ -156,17 +165,38 @@ export const TeamContainer: React.FC = () => {
               </GridDustibin>
             ))}
           </Area>
+          <SaveButton
+            style={{ y: 0, x: 0 }}
+            whileTap={{
+              y: 1,
+            }}
+          >
+            Save
+          </SaveButton>
         </div>
-
         <div>
-          {boxes.map(({ name, type }, index) => (
-            <Box
-              name={name}
-              type={type}
-              isDropped={isDropped(name)}
-              key={index}
-            />
-          ))}
+          <StyledInput
+            value={name}
+            onChangeText={(text) => setName(text)}
+            errorInput={false}
+            inputProps={{
+              placeholder: "Ronal",
+              title: "Search Players",
+            }}
+            customCss={css`
+              margin-bottom: 10px;
+            `}
+          />
+          <Boxes>
+            {boxes.map(({ name, type }, index) => (
+              <Box
+                name={name}
+                type={type}
+                isDropped={isDropped(name)}
+                key={index}
+              />
+            ))}
+          </Boxes>
         </div>
       </Container>
     </DndProvider>

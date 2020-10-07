@@ -1,6 +1,7 @@
 import { css } from "@emotion/core";
 /** @jsx jsx */
 import styled from "@emotion/styled";
+import { motion } from "framer-motion";
 
 export const Container = styled.div`
   display: grid;
@@ -43,4 +44,23 @@ export const flexCenter = css`
 
 export const GridDustibin = styled.div`
   ${flexCenter}
+`;
+
+export const Boxes = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+`;
+
+export const SaveButton = styled(motion.button)`
+  margin-top: 20px;
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(0deg, #752c81 50%, #b13b7c 90%);
+  border-radius: 5px;
+  ${flexCenter}
+  font-weight:bold;
+  color: white;
+  border: none;
+  outline: none;
 `;

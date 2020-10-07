@@ -28,6 +28,9 @@ const DustibinFill = styled.div<StyleProps>`
   width: 50px;
   border-radius: 50px;
   padding: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: ${(props) => props.backgroundcolor};
 `;
 
@@ -53,17 +56,13 @@ export const Dustbin: React.FC<DustbinProps> = ({
 
   let backgroundColor = "#CD9ABE";
   if (canDrop) {
-    backgroundColor = "#79318F";
+    backgroundColor = "#a06eb8";
   }
 
   return (
     <DustibinDiv>
-      <DustibinFill
-        ref={drop}
-        onDoubleClick={(event) => console.log("a")}
-        backgroundcolor={backgroundColor}
-      >
-        {lastDroppedItem && <p>{lastDroppedItem.name}</p>}
+      <DustibinFill ref={drop} backgroundcolor={backgroundColor}>
+        {lastDroppedItem && <p>{lastDroppedItem.name.match(/\b(\w)/g)}</p>}
       </DustibinFill>
     </DustibinDiv>
   );
