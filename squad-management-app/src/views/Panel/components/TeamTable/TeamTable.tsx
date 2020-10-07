@@ -18,6 +18,8 @@ import { MdAdd, MdUnfoldMore, MdEdit, MdShare, MdDelete } from "react-icons/md";
 import { Theme, withStyles } from "@material-ui/core";
 import Tooltip from "@material-ui/core/Tooltip";
 import { useHistory } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { url } from "../../../../util/url";
 
 const TooltipArrow = withStyles((theme: Theme) => ({
   arrow: {
@@ -33,8 +35,94 @@ const TooltipArrow = withStyles((theme: Theme) => ({
   },
 }))(Tooltip);
 
+interface Player {
+  id?: number;
+  name: string;
+  age: number;
+  position: number;
+  idTeam?: number;
+}
+
+interface Time {
+  averageAge: number;
+  description: string;
+  formation: string;
+  id: number;
+  name: string;
+  players: Player[];
+  site: string;
+  type: number;
+}
+
 function TeamTable() {
   const history = useHistory();
+  const [sort, setSort] = useState({ tag: "name", flag: 1 });
+  const [times, setTimes] = useState<Time[]>([]);
+
+  async function deleteTeam(id: number) {
+    try {
+      await fetch(`${url}/team/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      let response = await fetch(`${url}/team`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      let responseObject = await response.json();
+
+      setTimes(responseObject);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  useEffect(() => {
+    (async () => {
+      try {
+        let response = await fetch(`${url}/team`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        let responseObject = await response.json();
+
+        setTimes(responseObject);
+        console.log(responseObject);
+      } catch (err) {
+        console.log(err);
+      } finally {
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (sort.tag === "name") {
+      const newTimes = times.sort((a, b) =>
+        a.name > b.name ? sort.flag : b.name > a.name ? -sort.flag : 0
+      );
+      setTimes(newTimes);
+    }
+    if (sort.tag === "description") {
+      const newTimes = times.sort((a, b) =>
+        a.description > b.description
+          ? sort.flag
+          : b.description > a.description
+          ? -sort.flag
+          : 0
+      );
+      setTimes(newTimes);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sort]);
 
   return (
     <Paper css={root}>
@@ -60,7 +148,7 @@ function TeamTable() {
               whileTap={{
                 y: 1,
               }}
-              onClick={() => console.log("as")}
+              onClick={() => setSort({ tag: "name", flag: -sort.flag })}
             >
               <MdUnfoldMore />
             </SortButton>
@@ -72,59 +160,57 @@ function TeamTable() {
               whileTap={{
                 y: 1,
               }}
-              onClick={() => console.log("as")}
+              onClick={() => setSort({ tag: "description", flag: -sort.flag })}
             >
               <MdUnfoldMore />
             </SortButton>
           </DescriptionControl>
         </div>
-        {Array(6)
-          .fill(1)
-          .map((elem, index) => {
-            return (
-              <RowTable>
-                <p>Barcelona</p>
-                <DescriptionControl>
-                  <p>Barcellona Squad</p>
-                  <CellIcons>
-                    <TooltipArrow title="Delete" placement="top-start" arrow>
-                      <SortButton
-                        style={{ y: 0, x: 0 }}
-                        whileTap={{
-                          y: 1,
-                        }}
-                        onClick={() => console.log("Delete")}
-                      >
-                        <MdDelete />
-                      </SortButton>
-                    </TooltipArrow>
-                    <TooltipArrow title="Share" placement="top-start" arrow>
-                      <SortButton
-                        style={{ y: 0, x: 0 }}
-                        whileTap={{
-                          y: 1,
-                        }}
-                        onClick={() => console.log("Share")}
-                      >
-                        <MdShare />
-                      </SortButton>
-                    </TooltipArrow>
-                    <TooltipArrow title="Edit" placement="top-start" arrow>
-                      <SortButton
-                        style={{ y: 0, x: 0 }}
-                        whileTap={{
-                          y: 1,
-                        }}
-                        onClick={() => history.push(`/edit/${index}`)}
-                      >
-                        <MdEdit />
-                      </SortButton>
-                    </TooltipArrow>
-                  </CellIcons>
-                </DescriptionControl>
-              </RowTable>
-            );
-          })}
+        {times.map((elem, index) => {
+          return (
+            <RowTable key={elem.id}>
+              <p>{elem.name}</p>
+              <DescriptionControl>
+                <p>{elem.description}</p>
+                <CellIcons>
+                  <TooltipArrow title="Delete" placement="top-start" arrow>
+                    <SortButton
+                      style={{ y: 0, x: 0 }}
+                      whileTap={{
+                        y: 1,
+                      }}
+                      onClick={() => deleteTeam(elem.id)}
+                    >
+                      <MdDelete />
+                    </SortButton>
+                  </TooltipArrow>
+                  <TooltipArrow title="Share" placement="top-start" arrow>
+                    <SortButton
+                      style={{ y: 0, x: 0 }}
+                      whileTap={{
+                        y: 1,
+                      }}
+                      onClick={() => console.log("Share")}
+                    >
+                      <MdShare />
+                    </SortButton>
+                  </TooltipArrow>
+                  <TooltipArrow title="Edit" placement="top-start" arrow>
+                    <SortButton
+                      style={{ y: 0, x: 0 }}
+                      whileTap={{
+                        y: 1,
+                      }}
+                      onClick={() => history.push(`/edit/${elem.id}`)}
+                    >
+                      <MdEdit />
+                    </SortButton>
+                  </TooltipArrow>
+                </CellIcons>
+              </DescriptionControl>
+            </RowTable>
+          );
+        })}
       </Table>
     </Paper>
   );

@@ -7,7 +7,7 @@ import {
   Paper,
   TextField,
 } from "@material-ui/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StyledInput, {
   titlerStyle,
   upperTitleState,
@@ -25,6 +25,7 @@ import { makeStyles } from "@material-ui/styles";
 import { motion, TargetAndTransition } from "framer-motion";
 import { TeamContainer } from "../../components/Draggle/TeamContainer";
 import { useParams, useHistory } from "react-router-dom";
+import { url } from "../../util/url";
 
 export interface DustbinState {
   id: number;
@@ -43,7 +44,7 @@ interface ParamTypes {
   id: string;
 }
 
-export const initialDustibins = [
+export let initialDustibins = [
   { id: 1, accepts: ["player"], lastDroppedItem: null },
   { id: 2, accepts: ["player"], lastDroppedItem: null },
   { id: 3, accepts: ["player"], lastDroppedItem: null },
@@ -55,6 +56,20 @@ export const initialDustibins = [
   { id: 9, accepts: ["player"], lastDroppedItem: null },
   { id: 10, accepts: ["player"], lastDroppedItem: null },
   { id: 11, accepts: ["player"], lastDroppedItem: null },
+];
+
+export const formationOptions = [
+  { value: 0, name: "3 - 4 - 4" },
+  { value: 1, name: "3 - 2 - 2 - 3" },
+  { value: 2, name: "3 - 2 - 3 - 1" },
+  { value: 3, name: "3 - 4 - 3" },
+  { value: 4, name: "3 - 5 - 2" },
+  { value: 5, name: "4 - 2 - 3 - 1" },
+  { value: 6, name: "4 - 3 - 1 - 1" },
+  { value: 7, name: "4 - 3 - 2" },
+  { value: 8, name: "4 - 4 - 2" },
+  { value: 9, name: "4 - 5 - 1" },
+  { value: 10, name: "5 - 4 - 1" },
 ];
 
 export const useStyles = makeStyles((theme) => ({
@@ -85,18 +100,152 @@ function Edit() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [site, setSite] = useState("");
-  const [dustbins, setDustbins] = useState<DustbinState[]>(initialDustibins);
+  const [dustbins, setDustbins] = useState<DustbinState[]>([]);
   const [boxes, setBoxes] = useState<BoxState[]>([]);
   const [droppedBoxNames, setDroppedBoxNames] = useState<string[]>([]);
   const [teamType, setTeamType] = useState(0);
   const [keywords, setKeywords] = useState<any>();
+  const [formation, setFormation] = useState<{
+    value: any;
+    name: string;
+  }>({ value: 0, name: "3 - 4 - 3" });
   const classes = useStyles();
+  const history = useHistory();
+  const [loading, setLoading] = useState(false);
 
   const { id } = useParams<ParamTypes>();
 
-  function handleSubmit() {
-    console.log(droppedBoxNames, dustbins, id, name, description);
+  async function handleSubmit() {
+    if (!description.length) {
+      alert("Invalid Description");
+      return;
+    }
+
+    if (!name.length) {
+      alert("Invalid Name");
+      return;
+    }
+
+    if (!site.length || !urlRegex(site)) {
+      alert("Invalid Site");
+      return;
+    }
+
+    let dustibinsError = false;
+
+    const players = dustbins.map((elem) => {
+      if (!elem.lastDroppedItem) {
+        dustibinsError = true;
+      }
+      return {
+        name: elem.lastDroppedItem?.name,
+        age: elem.lastDroppedItem?.age,
+        position: elem.id,
+      };
+    });
+
+    console.log("a", dustibinsError);
+    if (dustibinsError) {
+      alert("Invalid Formation with players");
+      return;
+    }
+
+    let data = null;
+
+    if (id)
+      data = {
+        team: {
+          name,
+          description,
+          site,
+          type: teamType,
+          formation: formation.name,
+          id: parseInt(id),
+        },
+        players,
+      };
+    else
+      data = {
+        team: {
+          name,
+          description,
+          site,
+          type: teamType,
+          formation: formation.name,
+        },
+        players,
+      };
+
+    try {
+      console.log("data", data);
+      await fetch(`${url}/team`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      history.push("/");
+    } catch (err) {
+      console.log(err);
+    } finally {
+    }
   }
+
+  useEffect(() => {
+    if (id)
+      (async () => {
+        try {
+          let response = await fetch(`${url}/team/${id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          let responseObject = await response.json();
+          setDescription(responseObject.description);
+          setName(responseObject.name);
+          setSite(responseObject.site);
+
+          let arrayDroppedBoxNames: string[] = [];
+          const arrayDustibins = initialDustibins.map((elem, index) => {
+            arrayDroppedBoxNames.push(responseObject?.players[index]?.name);
+            return {
+              ...elem,
+              lastDroppedItem: {
+                name: responseObject?.players[index]?.name,
+                type: "player",
+                age: responseObject?.players[index]?.age,
+              },
+            };
+          });
+
+          setDroppedBoxNames(arrayDroppedBoxNames);
+
+          setDustbins(arrayDustibins);
+
+          const formationOption = formationOptions.find(
+            (element) => element.name === responseObject.formation
+          );
+          if (formationOption)
+            setFormation(
+              formationOption as {
+                value: number;
+                name: string;
+              }
+            );
+        } catch (err) {
+          console.log(err);
+        } finally {
+        }
+      })();
+    else {
+      setDustbins(initialDustibins);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div css={editContainer}>
@@ -110,7 +259,7 @@ function Edit() {
           <StyledInput
             value={name}
             onChangeText={(text) => setName(text)}
-            errorInput={!name.length}
+            errorInput={!name?.length}
             inputProps={{
               placeholder: "Insert team name",
               title: "Team Name",
@@ -131,7 +280,7 @@ function Edit() {
           <StyledInput
             value={description}
             onChangeText={(text) => setDescription(text)}
-            errorInput={!description.length}
+            errorInput={!description?.length}
             inputProps={{
               title: "Description",
             }}
@@ -227,6 +376,8 @@ function Edit() {
           handleSubmit={handleSubmit}
           droppedBoxNames={droppedBoxNames}
           setDroppedBoxNames={setDroppedBoxNames}
+          formation={formation}
+          setFormation={setFormation}
         />
       </Paper>
     </div>

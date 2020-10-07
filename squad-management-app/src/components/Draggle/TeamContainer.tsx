@@ -26,6 +26,7 @@ import StyledInput from "../StyledInput";
 import {
   BoxState,
   DustbinState,
+  formationOptions,
   initialDustibins,
 } from "../../views/Edit/Edit";
 import { Dispatch } from "@testing-library/react/node_modules/@types/react";
@@ -61,6 +62,13 @@ interface Props {
   setBoxes: Dispatch<SetStateAction<BoxState[]>>;
   droppedBoxNames: string[];
   setDroppedBoxNames: Dispatch<SetStateAction<string[]>>;
+  formation: { value: any; name: string };
+  setFormation: Dispatch<
+    SetStateAction<{
+      value: any;
+      name: string;
+    }>
+  >;
   handleSubmit: any;
 }
 
@@ -69,10 +77,6 @@ export function TeamContainer(props: Props) {
   const [loading, setLoading] = useState(false);
   const classes = useStyles();
   const firstUpdate = useRef(true);
-  const [formation, setFormation] = useState<{
-    value: any;
-    name: string;
-  }>({ value: 0, name: "3 - 4 - 3" });
 
   const {
     dustbins,
@@ -81,6 +85,8 @@ export function TeamContainer(props: Props) {
     setBoxes,
     droppedBoxNames,
     setDroppedBoxNames,
+    formation,
+    setFormation,
     handleSubmit,
   } = props;
 
@@ -89,7 +95,7 @@ export function TeamContainer(props: Props) {
   }
 
   const handleDrop = useCallback(
-    (index: number, item: { name: string }) => {
+    (index: number, item: { name: string; age: number }) => {
       const { name } = item;
       setDroppedBoxNames(
         update(droppedBoxNames, name ? { $push: [name] } : { $push: [] })
@@ -122,7 +128,7 @@ export function TeamContainer(props: Props) {
 
   useEffect(() => {
     if (firstUpdate.current) {
-      setTimeout(() => (firstUpdate.current = false), 600);
+      setTimeout(() => (firstUpdate.current = false), 1000);
       return;
     } else {
       setDustbins(initialDustibins);
@@ -150,7 +156,7 @@ export function TeamContainer(props: Props) {
           let responseObject = await response.json();
 
           let players = responseObject.api.players
-            .slice(0, 10)
+            .slice(0, 11)
             .map((elem: { player_name: any; nationality: any; age: any }) => {
               return {
                 name: elem.player_name,
@@ -186,17 +192,9 @@ export function TeamContainer(props: Props) {
                   id: "age-native-label-placeholder",
                 }}
               >
-                <option value={0}>3 - 4 - 4</option>
-                <option value={1}>3 - 2 - 2 - 3</option>
-                <option value={2}>3 - 2 - 3 - 1</option>
-                <option value={3}>3 - 4 - 3</option>
-                <option value={4}>3 - 5 - 2</option>
-                <option value={5}>4 - 2 - 3 - 1</option>
-                <option value={6}>4 - 3 - 1 - 1</option>
-                <option value={7}>4 - 3 - 2</option>
-                <option value={8}>4 - 4 - 2</option>
-                <option value={9}>4 - 5 - 1</option>
-                <option value={10}>5 - 4 -1</option>
+                {formationOptions.map((elem) => {
+                  return <option value={elem.value}>{elem.name}</option>;
+                })}
               </NativeSelect>
             </FormControl>
           </div>
@@ -206,7 +204,9 @@ export function TeamContainer(props: Props) {
                 <Dustbin
                   accept={accepts}
                   lastDroppedItem={lastDroppedItem}
-                  onDrop={(item) => handleDrop(index, item)}
+                  onDrop={(item) => {
+                    handleDrop(index, item);
+                  }}
                   key={index}
                 />
               </GridDustibin>

@@ -50,7 +50,7 @@ export interface BoxProps {
 
 export const Box: React.FC<BoxProps> = ({ boxElem, isDropped }) => {
   const [{ opacity }, drag] = useDrag({
-    item: { name: boxElem.name, type: boxElem.type },
+    item: { name: boxElem.name, type: boxElem.type, age: boxElem.age },
     collect: (monitor) => ({
       opacity: monitor.isDragging() ? 0.4 : 1,
     }),
