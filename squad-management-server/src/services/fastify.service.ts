@@ -20,7 +20,10 @@ const fastifyService: FastifyService = {
         server.route(route);
       });
 
-      await server.listen(Number(process.env.SERVER_PORT), "0.0.0.0");
+      await server.listen(
+        Number(process.env.PORT || process.env.SERVER_PORT),
+        "0.0.0.0"
+      );
 
       console.log(
         `[FASTIFY] Fastify service initialized on port ${

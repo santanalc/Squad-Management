@@ -29,8 +29,6 @@ import {
   formationOptions,
   initialDustibins,
 } from "../../views/Edit/Edit";
-import { Dispatch } from "@testing-library/react/node_modules/@types/react";
-import { SetStateAction } from "@testing-library/react/node_modules/@types/react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -57,18 +55,13 @@ export interface ContainerState {
 
 interface Props {
   dustbins: DustbinState[];
-  setDustbins: Dispatch<SetStateAction<DustbinState[]>>;
+  setDustbins: any;
   boxes: BoxState[];
-  setBoxes: Dispatch<SetStateAction<BoxState[]>>;
+  setBoxes: any;
   droppedBoxNames: string[];
-  setDroppedBoxNames: Dispatch<SetStateAction<string[]>>;
+  setDroppedBoxNames: any;
   formation: { value: any; name: string };
-  setFormation: Dispatch<
-    SetStateAction<{
-      value: any;
-      name: string;
-    }>
-  >;
+  setFormation: any;
   handleSubmit: any;
 }
 
